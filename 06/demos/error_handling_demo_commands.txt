@@ -1,0 +1,39 @@
+#Deploy FileStreamSink Connector
+curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '
+{  
+  "name": "file-sink",  
+  "config": { 
+    "connector.class": "FileStreamSink", 
+    "tasks.max": "1", 
+    "topics": "file-source",
+    "file": "sink.txt", 
+    "name": "file-sink"  
+  }
+}'
+
+#Consume from file-source topic
+./bin/kafka-console-consumer.sh --topic file-source --bootstrap-server localhost:9092 --from-beginning
+
+#Produce to file-source topic
+./bin/kafka-console-producer.sh --topic file-source --broker-list localhost:9092
+
+#Deploy FileStreamSink Connector Tolerant
+curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '
+{
+  "name": "file-sink-tolerant",  
+  "config": { 
+    "connector.class": "FileStreamSink", 
+    "tasks.max": "1", 
+    "topics": "file-source",
+    "file": "sink.txt", 
+    "errors.tolerance":"all", 
+    "errors.deadletterqueue.topic.name":"file-source-errors",  
+    "errors.deadletterqueue.topic.replication.factor":"1", 
+    "name": "file-sink-tolerant"  
+  }
+}'
+
+#Consume from file-source-errors topic
+./bin/kafka-console-consumer.sh --topic file-source-errors --bootstrap-server localhost:9092 --from-beginning
+
+

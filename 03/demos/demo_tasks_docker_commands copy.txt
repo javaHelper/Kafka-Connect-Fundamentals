@@ -1,0 +1,15 @@
+# Start Kafka Connect Worker 3
+docker run -it --rm --name connect-3 \
+-v /path/to/downloads/folder/confluentinc-kafka-connect-elasticsearch-5.3.1/lib:/kafka/connect/elasticsearch/ \
+-e  GROUP_ID=1 \
+-e CONFIG_STORAGE_TOPIC=kafka_connect_configs \
+-e OFFSET_STORAGE_TOPIC=kafka_connect_offsets \
+-e STATUS_STORAGE_TOPIC=kafka_connect_statuses \
+--link zookeeper:zookeeper \
+--link kafka:kafka \
+--link mysql:mysql \
+--link elasticsearch:elasticsearch \
+debezium/connect:1.0
+
+# Stop Kafka Connect Worker 2
+Docker stop connect-2

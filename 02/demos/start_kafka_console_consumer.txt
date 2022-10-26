@@ -1,0 +1,5 @@
+docker exec -it kafka bash
+
+./kafka-topics.sh --list --bootstrap-server 172.17.0.3:9092
+
+./kafka-console-consumer --bootstrap-server 172.17.0.3:9092 --topic articles --from-beginning

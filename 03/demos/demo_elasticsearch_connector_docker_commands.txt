@@ -1,0 +1,38 @@
+
+# Start ElasticSearch
+docker run -it --rm --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.4.1
+
+# Check the status of the containers
+docker ps
+
+# Open interactive terminal inside the Kafka Connect container
+docker run -it connect bash
+
+# Start Kafka Connect Worker 2
+docker run -it --rm --name connect-2 -p 8084:8083 \
+-v /path/to/downloads/folder/confluentinc-kafka-connect-elasticsearch-5.3.1/lib:/kafka/connect/elasticsearch/ \
+-e  GROUP_ID=1 \
+-e CONFIG_STORAGE_TOPIC=kafka_connect_configs \
+-e OFFSET_STORAGE_TOPIC=kafka_connect_offsets \
+-e STATUS_STORAGE_TOPIC=kafka_connect_statuses \
+--link zookeeper:zookeeper \
+--link kafka:kafka \
+--link mysql:mysql \
+--link elasticsearch:elasticsearch \
+debezium/connect:1.0
+
+# Stop Kafka Connect Worker 1
+docker stop connect
+
+# Start Kafka Connect Worker 1
+docker run -it --rm --name connect-1 -p 8083:8083 \
+-v /path/to/downloads/folder/confluentinc-kafka-connect-elasticsearch-5.3.1/lib:/kafka/connect/elasticsearch/ \
+-e  GROUP_ID=1 \
+-e CONFIG_STORAGE_TOPIC=kafka_connect_configs \
+-e OFFSET_STORAGE_TOPIC=kafka_connect_offsets \
+-e STATUS_STORAGE_TOPIC=kafka_connect_statuses \
+--link zookeeper:zookeeper \
+--link kafka:kafka \
+--link mysql:mysql \
+--link elasticsearch:elasticsearch \
+debezium/connect:1.0

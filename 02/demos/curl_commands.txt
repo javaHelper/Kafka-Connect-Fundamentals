@@ -1,0 +1,21 @@
+curl -H "Accept:application/json" localhost:8083/
+
+curl -H "Accept:application/json" localhost:8083/connectors/
+
+curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '
+{
+  "name": "articles-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "globomantics",
+    "database.password": "password",
+    "database.server.id": "223344",
+    "database.server.name": "globomantics",
+    "database.whitelist": "globomantics",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes"
+    }
+}'
